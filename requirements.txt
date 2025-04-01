@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+dotenv
+phidata
+qdrant-client
+pydantic
+bs4
+google-generativeai
