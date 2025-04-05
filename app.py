@@ -96,11 +96,11 @@ async def analyze(request: AnalysisRequest):
             search_knowledge=True,
             use_tools=True,
             role="Tell whether the text content is ai generated",
-            expected_output="the final response should contain both percentage of ai generated content and then its analysis, For Example: 46%, this data is less likely to be ai generated"
+            expected_output="the final response should contain both percentage of ai generated content and then its concise yet detailed analysis, For Example: 46%, this data is less likely to be ai generated"
         )
         
         # Run the analysis
-        user_message = f"What percentage of data in the knowledge base AI generated? Please analyze and provide proper reasoning for the same"
+        user_message = f"What percentage of the text in the knowledge base AI generated? Please analyze and provide proper reasoning for the same"
         
         # Get response from the agent
         response: RunResponse = agent.run(user_message)
