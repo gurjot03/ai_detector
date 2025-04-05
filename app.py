@@ -100,7 +100,7 @@ async def analyze(request: AnalysisRequest):
         )
         
         # Run the analysis
-        user_message = f"What percentage of the text in the knowledge base AI generated? Please analyze and provide proper reasoning for the same"
+        user_message = f"What percentage of the data in the knowledge base is AI generated? Please analyze and provide proper reasoning for the same"
         
         # Get response from the agent
         response: RunResponse = agent.run(user_message)
