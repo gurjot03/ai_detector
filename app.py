@@ -89,7 +89,7 @@ async def analyze(request: AnalysisRequest):
         
         agent = Agent(
             name="Website Chatbot",
-            model=Gemini(id="gemini-2.5-pro-exp-03-25"),
+            model=Gemini(id="gemini-2.0-flash-001"),
             knowledge=knowledge_base,
             search_knowledge=True,
             use_tools=True,
@@ -97,7 +97,7 @@ async def analyze(request: AnalysisRequest):
             expected_output="the final response should contain both percentage of ai generated content and then its concise yet detailed analysis, For Example: 46%, this data is less likely to be ai generated"
         )
         
-        user_message = f"What percentage of the data in the knowledge base is AI generated? Please analyze and provide proper reasoning for the same"
+        user_message = f"What percentage of the text in the knowledge base do you think is AI generated based on the writing style, grammatical errors or nuances in human writing? Please analyze and provide proper reasoning for the same"
         
         # response from the agent
         response: RunResponse = agent.run(user_message)
