@@ -31,12 +31,11 @@ app.add_middleware(
 
 def generate_collection_name(url: str = None, content: str = None) -> str:
     if url:
-        # Extract domain from URL and take first 7 characters
+        # domain from URL and take first 7 characters
         parsed_url = urlparse(url)
         domain = parsed_url.netloc
         return f"ai_detector_{domain[:7]}"
     elif content:
-        # Take first 7 characters of content
         return f"ai_detector_{content[:7]}"
     return "ai_det_default"
 
@@ -57,7 +56,7 @@ async def analyze(request: AnalysisRequest):
     client = QdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY)
     
     try:
-        # Create collection with unique name
+        # collection with unique name
         client.create_collection(
             collection_name=collection_name,
             vectors_config=VectorParams(size=768, distance=Distance.COSINE)
@@ -73,15 +72,14 @@ async def analyze(request: AnalysisRequest):
             api_key=QDRANT_API_KEY
         )
         
-        # Initialize knowledge base based on input type
         if request.content:
-            # For custom text input
+            # For custom text
             knowledge_base = AgentKnowledge(
                 vector_db=vector_db
             )
             knowledge_base.load_text(request.content)
         else:
-            # For website analysis
+            # website analysis
             knowledge_base = WebsiteKnowledgeBase(
                 urls=[request.url],
                 vector_db=vector_db,
@@ -91,7 +89,7 @@ async def analyze(request: AnalysisRequest):
         
         agent = Agent(
             name="Website Chatbot",
-            model=Gemini(id="gemini-2.0-flash-001"),
+            model=Gemini(id="gemini-2.5-pro-exp-03-25"),
             knowledge=knowledge_base,
             search_knowledge=True,
             use_tools=True,
@@ -99,19 +97,17 @@ async def analyze(request: AnalysisRequest):
             expected_output="the final response should contain both percentage of ai generated content and then its concise yet detailed analysis, For Example: 46%, this data is less likely to be ai generated"
         )
         
-        # Run the analysis
         user_message = f"What percentage of the data in the knowledge base is AI generated? Please analyze and provide proper reasoning for the same"
         
-        # Get response from the agent
+        # response from the agent
         response: RunResponse = agent.run(user_message)
         
-        # Extract percentage from response
+        # percentage from response
         percentage_match = re.search(r'(\d+)%', response.content)
         if percentage_match:
             percentage = int(percentage_match.group(1))
         else:
-            # If no percentage found, make a reasonable guess based on analysis
-            percentage = 75  # Default value
+            percentage = 50  # Default value
         
         return {
             "percentage": percentage,
@@ -123,7 +119,7 @@ async def analyze(request: AnalysisRequest):
         raise HTTPException(status_code=500, detail=str(e))
     
     finally:
-        # Delete the collection after analysis is complete
+        # Deleting collection after analysis is complete
         try:
             client.delete_collection(collection_name=collection_name)
             print(f"Collection {collection_name} deleted successfully")
